@@ -1,0 +1,24 @@
+# Dependencies & Environments
+node_modules/
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Production builds
+dist/
+build/
+
+# Environment files
+.env
+.env.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# Database
+*.sqlite
+*.sqlite3
