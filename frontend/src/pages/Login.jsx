@@ -32,7 +32,7 @@ export default function Login() {
 
   const handleDemoLogin = async () => {
     setLoading(true);
-    await login('atharv@example.com', 'demo1234');
+    await login('atharv@example.com', 'password123');
     navigate('/');
   };
 
