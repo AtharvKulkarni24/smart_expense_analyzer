@@ -1,0 +1,244 @@
+{
+  "model_version": "mnb-v1.0.0",
+  "model_type": "MultinomialNB",
+  "vectorizer": "TfidfVectorizer(ngram_range=(1,2), max_features=3500)",
+  "training_timestamp": "2026-10-25T14:40:30.273090",
+  "total_samples": 3500,
+  "train_samples": 2800,
+  "test_samples": 700,
+  "classes": [
+    "Bills & Utilities",
+    "Education",
+    "Entertainment",
+    "Food & Dining",
+    "Groceries",
+    "Healthcare",
+    "Other",
+    "Shopping",
+    "Transport",
+    "Travel"
+  ],
+  "metrics": {
+    "mnb": {
+      "accuracy": 1.0,
+      "macro_f1": 1.0,
+      "weighted_f1": 1.0
+    },
+    "decision_tree_baseline": {
+      "accuracy": 0.7043,
+      "macro_f1": 0.7337,
+      "weighted_f1": 0.7337
+    }
+  },
+  "per_class_report": {
+    "Bills & Utilities": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 70.0
+    },
+    "Education": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 70.0
+    },
+    "Entertainment": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 70.0
+    },
+    "Food & Dining": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 70.0
+    },
+    "Groceries": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 70.0
+    },
+    "Healthcare": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 70.0
+    },
+    "Other": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 70.0
+    },
+    "Shopping": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 70.0
+    },
+    "Transport": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 70.0
+    },
+    "Travel": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 70.0
+    },
+    "accuracy": 1.0,
+    "macro avg": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 700.0
+    },
+    "weighted avg": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 700.0
+    }
+  },
+  "confusion_matrix": {
+    "labels": [
+      "Bills & Utilities",
+      "Education",
+      "Entertainment",
+      "Food & Dining",
+      "Groceries",
+      "Healthcare",
+      "Other",
+      "Shopping",
+      "Transport",
+      "Travel"
+    ],
+    "matrix": [
+      [
+        70,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        70,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        70,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        70,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        70,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        70,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        70,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        70,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        70,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        70
+      ]
+    ]
+  }
+}

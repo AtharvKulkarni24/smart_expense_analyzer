@@ -1,0 +1,171 @@
+{
+  "model_version": "kmeans-v1.0.0",
+  "algorithm": "KMeans",
+  "n_clusters": 5,
+  "features": [
+    "prop_food_dining",
+    "prop_groceries",
+    "prop_transport",
+    "prop_shopping",
+    "prop_bills_utilities",
+    "prop_entertainment",
+    "prop_healthcare",
+    "prop_education",
+    "prop_travel",
+    "prop_other",
+    "monthly_transaction_count",
+    "average_transaction_amount"
+  ],
+  "silhouette_score": 0.2828,
+  "tuning_evaluation": [
+    {
+      "k": 2,
+      "inertia": 3911.92,
+      "silhouette_score": 0.1954
+    },
+    {
+      "k": 3,
+      "inertia": 3198.66,
+      "silhouette_score": 0.239
+    },
+    {
+      "k": 4,
+      "inertia": 2555.75,
+      "silhouette_score": 0.2863
+    },
+    {
+      "k": 5,
+      "inertia": 2278.58,
+      "silhouette_score": 0.2828
+    },
+    {
+      "k": 6,
+      "inertia": 2156.18,
+      "silhouette_score": 0.2678
+    },
+    {
+      "k": 7,
+      "inertia": 2046.06,
+      "silhouette_score": 0.2764
+    }
+  ],
+  "cluster_profiles": {
+    "0": {
+      "cluster_id": 0,
+      "label": "Travel & Mobility Heavy",
+      "summary": "Elevated allocation to Travel (34.6%) and Transport (20.2%).",
+      "top_categories": [
+        "Travel",
+        "Transport"
+      ],
+      "average_transaction_count": 35.3,
+      "average_transaction_amount": 1736.72,
+      "proportions": {
+        "Travel": 0.3457,
+        "Transport": 0.2017,
+        "Food & Dining": 0.1409,
+        "Groceries": 0.087,
+        "Shopping": 0.0783,
+        "Bills & Utilities": 0.0783,
+        "Entertainment": 0.0371,
+        "Other": 0.0191,
+        "Healthcare": 0.0119,
+        "Education": 0.0001
+      }
+    },
+    "1": {
+      "cluster_id": 1,
+      "label": "Dining & Essentials Heavy",
+      "summary": "Significant expenditure concentrated in Food & Dining (39.9%) and Groceries (21.8%).",
+      "top_categories": [
+        "Food & Dining",
+        "Groceries"
+      ],
+      "average_transaction_count": 51.9,
+      "average_transaction_amount": 546.6,
+      "proportions": {
+        "Food & Dining": 0.3991,
+        "Groceries": 0.2182,
+        "Bills & Utilities": 0.1111,
+        "Transport": 0.0907,
+        "Shopping": 0.0769,
+        "Entertainment": 0.053,
+        "Healthcare": 0.02,
+        "Other": 0.0195,
+        "Education": 0.0108,
+        "Travel": 0.0007
+      }
+    },
+    "2": {
+      "cluster_id": 2,
+      "label": "Balanced Budgeter",
+      "summary": "Expenditure is evenly distributed across essential categories. Average transaction: INR 797.49 across 37 monthly transactions.",
+      "top_categories": [
+        "Bills & Utilities",
+        "Groceries"
+      ],
+      "average_transaction_count": 36.8,
+      "average_transaction_amount": 797.49,
+      "proportions": {
+        "Bills & Utilities": 0.1835,
+        "Groceries": 0.1798,
+        "Food & Dining": 0.178,
+        "Transport": 0.1083,
+        "Shopping": 0.1058,
+        "Entertainment": 0.0851,
+        "Healthcare": 0.0643,
+        "Education": 0.0459,
+        "Other": 0.0295,
+        "Travel": 0.0198
+      }
+    },
+    "3": {
+      "cluster_id": 3,
+      "label": "Fixed Obligations Heavy",
+      "summary": "Major share allocated to Bills & Utilities (45.5%), indicating prominent fixed household overheads.",
+      "top_categories": [
+        "Bills & Utilities",
+        "Groceries"
+      ],
+      "average_transaction_count": 24.6,
+      "average_transaction_amount": 1401.46,
+      "proportions": {
+        "Bills & Utilities": 0.4547,
+        "Groceries": 0.185,
+        "Food & Dining": 0.0983,
+        "Transport": 0.0829,
+        "Shopping": 0.0507,
+        "Healthcare": 0.045,
+        "Entertainment": 0.0292,
+        "Education": 0.0285,
+        "Other": 0.0256,
+        "Travel": -0.0
+      }
+    },
+    "4": {
+      "cluster_id": 4,
+      "label": "Discretionary & Shopping Heavy",
+      "summary": "High discretionary spending in Shopping (44.0%), with Food & Dining at 13.3%.",
+      "top_categories": [
+        "Shopping",
+        "Food & Dining"
+      ],
+      "average_transaction_count": 37.8,
+      "average_transaction_amount": 1295.73,
+      "proportions": {
+        "Shopping": 0.44,
+        "Food & Dining": 0.1325,
+        "Entertainment": 0.1177,
+        "Groceries": 0.1033,
+        "Transport": 0.0786,
+        "Bills & Utilities": 0.078,
+        "Other": 0.0256,
+        "Travel": 0.0089,
+        "Education": 0.0077,
+        "Healthcare": 0.0076
+      }
+    }
+  },
+  "training_timestamp": "2026-10-25T14:42:27.508231",
+  "total_profiles_trained": 400
+}

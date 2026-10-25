@@ -1,27 +1,41 @@
-# Dependency directories
+# Dependencies & Virtual Environments
 node_modules/
 */node_modules/
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+.pytest_cache/
 
-# Production build outputs
+# Production Build Outputs
 dist/
 */dist/
 dist-ssr/
 build/
 
-# Environment files
+# Environment Variables
 .env
 backend/.env
 frontend/.env
 *.env.local
+!*.env.example
+!*/.env.example
 
-# Databases & logs
+# Databases & Cache
 *.db
 *.db-journal
+*.sqlite
+*.sqlite3
+
+# Logs
 *.log
 logs/
 npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# OS / Editor files
+# OS & Editor configurations
 .DS_Store
 Thumbs.db
 .idea/
