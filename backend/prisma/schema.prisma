@@ -1,0 +1,104 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String            @id @default(uuid())
+  name             String            @db.VarChar(100)
+  email            String            @unique @db.VarChar(255)
+  passwordHash     String            @map("password_hash") @db.VarChar(255)
+  createdAt        DateTime          @default(now()) @map("created_at")
+
+  transactions     Transaction[]
+  budgets          Budget[]
+  spendingProfiles SpendingProfile[]
+
+  @@map("users")
+}
+
+model Category {
+  id                  Int                 @id // Fixed IDs 1 to 10
+  name                String              @unique @db.VarChar(50)
+  isDefault           Boolean             @default(true) @map("is_default")
+
+  transactions        Transaction[]
+  budgets             Budget[]
+  predictions         ExpensePrediction[] @relation("PredictedCategory")
+  acceptedCorrections ExpensePrediction[] @relation("AcceptedCategory")
+
+  @@map("categories")
+}
+
+model Transaction {
+  id               String             @id @default(uuid())
+  userId           String             @map("user_id")
+  amount           Decimal            @db.Decimal(12, 2)
+  currency         String             @default("INR") @db.VarChar(3)
+  description      String             @db.VarChar(255)
+  merchant         String?            @db.VarChar(100)
+  categoryId       Int                @map("category_id")
+  transactionDate  String             @map("transaction_date") @db.VarChar(10) // "YYYY-MM-DD"
+  source           String             @default("manual") @db.VarChar(20) // "manual" | "csv" | "synthetic"
+  createdAt        DateTime           @default(now()) @map("created_at")
+
+  user             User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category         Category           @relation(fields: [categoryId], references: [id])
+  prediction       ExpensePrediction?
+
+  @@index([userId, transactionDate])
+  @@index([userId, categoryId])
+  @@map("transactions")
+}
+
+model Budget {
+  id               String            @id @default(uuid())
+  userId           String            @map("user_id")
+  categoryId       Int               @map("category_id")
+  month            String            @db.VarChar(7) // Format: "YYYY-MM"
+  limitAmount      Decimal           @map("limit_amount") @db.Decimal(12, 2)
+  currency         String            @default("INR") @db.VarChar(3)
+  createdAt        DateTime          @default(now()) @map("created_at")
+
+  user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category         Category          @relation(fields: [categoryId], references: [id])
+
+  @@unique([userId, categoryId, month])
+  @@map("budgets")
+}
+
+model ExpensePrediction {
+  id                  String       @id @default(uuid())
+  transactionId       String       @unique @map("transaction_id")
+  predictedCategoryId Int          @map("predicted_category_id")
+  modelVersion        String       @map("model_version") @db.VarChar(50)
+  scoresJson          Json         @map("scores_json") // Native PostgreSQL JSON
+  acceptedCategoryId  Int?         @map("accepted_category_id")
+  createdAt           DateTime     @default(now()) @map("created_at")
+
+  transaction         Transaction  @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  predictedCategory   Category     @relation("PredictedCategory", fields: [predictedCategoryId], references: [id])
+  acceptedCategory    Category?    @relation("AcceptedCategory", fields: [acceptedCategoryId], references: [id])
+
+  @@map("expense_predictions")
+}
+
+model SpendingProfile {
+  id               String            @id @default(uuid())
+  userId           String            @map("user_id")
+  periodMonth      String            @map("period_month") @db.VarChar(7) // Format: "YYYY-MM"
+  clusterId        Int               @map("cluster_id")
+  profileLabel     String            @map("profile_label") @db.VarChar(100)
+  summary          String            @db.Text
+  modelVersion     String            @map("model_version") @db.VarChar(50)
+  createdAt        DateTime          @default(now()) @map("created_at")
+
+  user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, periodMonth])
+  @@map("spending_profiles")
+}
