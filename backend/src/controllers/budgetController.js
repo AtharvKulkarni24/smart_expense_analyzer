@@ -1,5 +1,18 @@
 const prisma = require('../config/db');
 
+const CATEGORY_COLORS = {
+  1: '#f97316', // Food & Dining
+  2: '#10b981', // Groceries
+  3: '#06b6d4', // Transport
+  4: '#ec4899', // Shopping
+  5: '#8b5cf6', // Bills & Utilities
+  6: '#f43f5e', // Entertainment
+  7: '#14b8a6', // Healthcare
+  8: '#3b82f6', // Education
+  9: '#eab308', // Travel
+  10: '#64748b', // Other
+};
+
 async function getBudgets(req, res, next) {
   try {
     const userId = req.user.id;
@@ -49,6 +62,7 @@ async function getBudgets(req, res, next) {
       return {
         categoryId: cat.id,
         categoryName: cat.name,
+        color: CATEGORY_COLORS[cat.id] || '#64748b',
         limitAmount,
         actualSpent,
         remaining,

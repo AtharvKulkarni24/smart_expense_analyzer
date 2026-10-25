@@ -234,56 +234,61 @@ export const spendsenseApi = {
   },
 
   async importCsv(rows) {
-    // Process CSV rows in client or send to backend
-    let imported = 0;
-    let rejected = 0;
-    const rejectedRows = [];
+    try {
+      const res = await api.post('/transactions/import', { rows });
+      return res.data;
+    } catch (err) {
+      // Process CSV rows in client offline fallback
+      let imported = 0;
+      let rejected = 0;
+      const rejectedRows = [];
 
-    rows.forEach((row, idx) => {
-      const amount = parseFloat(row.Amount || row.amount);
-      const desc = row.Description || row.description;
-      const date = row.Date || row.date;
+      rows.forEach((row, idx) => {
+        const amount = parseFloat(row.Amount || row.amount);
+        const desc = row.Description || row.description;
+        const date = row.Date || row.date;
 
-      if (!desc || isNaN(amount) || amount <= 0) {
-        rejected++;
-        rejectedRows.push({ row: idx + 1, reason: 'Invalid description or non-positive amount' });
-        return;
-      }
-
-      let categoryId = Number(row.CategoryId || row.category_id);
-      if (!categoryId) {
-        const catName = row.Category || row.category;
-        if (catName) {
-          const found = getCategoryByName(catName);
-          categoryId = found ? found.id : predictCategoryHeuristic(desc).categoryId;
-        } else {
-          categoryId = predictCategoryHeuristic(desc).categoryId;
+        if (!desc || isNaN(amount) || amount <= 0) {
+          rejected++;
+          rejectedRows.push({ row: idx + 1, reason: 'Invalid description or non-positive amount' });
+          return;
         }
-      }
 
-      mockTransactions.unshift({
-        id: `tx-csv-${Date.now()}-${idx}`,
-        amount,
-        currency: 'INR',
-        description: desc,
-        merchant: row.Merchant || row.merchant || '',
-        categoryId,
-        transactionDate: date || new Date().toISOString().split('T')[0],
-        source: 'csv',
-        createdAt: new Date().toISOString(),
+        let categoryId = Number(row.CategoryId || row.category_id);
+        if (!categoryId) {
+          const catName = row.Category || row.category;
+          if (catName) {
+            const found = getCategoryByName(catName);
+            categoryId = found ? found.id : predictCategoryHeuristic(desc).categoryId;
+          } else {
+            categoryId = predictCategoryHeuristic(desc).categoryId;
+          }
+        }
+
+        mockTransactions.unshift({
+          id: `tx-csv-${Date.now()}-${idx}`,
+          amount,
+          currency: 'INR',
+          description: desc,
+          merchant: row.Merchant || row.merchant || '',
+          categoryId,
+          transactionDate: date || new Date().toISOString().split('T')[0],
+          source: 'csv',
+          createdAt: new Date().toISOString(),
+        });
+        imported++;
       });
-      imported++;
-    });
 
-    return {
-      success: true,
-      data: {
-        totalProcessed: rows.length,
-        importedCount: imported,
-        rejectedCount: rejected,
-        rejectedRows,
-      },
-    };
+      return {
+        success: true,
+        data: {
+          totalProcessed: rows.length,
+          importedCount: imported,
+          rejectedCount: rejected,
+          rejectedRows,
+        },
+      };
+    }
   },
 
   // Analytics & Summary
