@@ -140,7 +140,7 @@ async function addTransaction(req, res, next) {
           transactionId: transaction.id,
           predictedCategoryId: mlResult.category_id,
           modelVersion: mlResult.model_version || 'mnb-v1.0.0',
-          scoresJson: JSON.stringify(mlResult.scores || {}),
+          scoresJson: mlResult.scores || {},
           acceptedCategoryId: finalCategoryId,
         },
       }).catch(() => {}); // non-blocking
@@ -275,9 +275,9 @@ async function importCsv(req, res, next) {
         if (catMap.has(catName)) {
           categoryId = catMap.get(catName);
         } else {
-          // ML Fallback categorization
-          const pred = predictCategoryFallback(desc);
-          categoryId = pred.category_id;
+          // ML Categorization via microservice
+          const pred = await predictCategory(desc, merchant, amount);
+          categoryId = pred.category_id || 10;
         }
       }
 

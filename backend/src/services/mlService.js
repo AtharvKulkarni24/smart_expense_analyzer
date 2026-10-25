@@ -90,17 +90,42 @@ async function predictCategory(description, merchant, amount) {
  * Fetch K-Means Spending Profile from FastAPI or compute centroid closest match
  */
 async function getSpendingProfile(periodMonth, profilePayload) {
+  const proportions = profilePayload?.proportions || {};
+
   try {
-    const res = await axios.post(`${ML_SERVICE_URL}/cluster/profile`, profilePayload, { timeout: 1500 });
+    const res = await axios.post(`${ML_SERVICE_URL}/cluster/profile`, profilePayload, { timeout: 2500 });
     if (res.data && res.data.profile_label) {
-      return res.data;
+      const topCats = (res.data.top_contributing_categories || []).map((catItem) => {
+        const catName = typeof catItem === 'string' ? catItem : catItem.name;
+        const prop = (typeof catItem === 'object' && catItem.proportion !== undefined)
+          ? catItem.proportion
+          : (proportions[catName] || 0.20);
+        return {
+          name: catName,
+          proportion: Number(Number(prop).toFixed(2)),
+        };
+      });
+
+      const topNames = topCats.map((c) => c.name).join(' & ');
+      const recommendation = topNames
+        ? `Your spending profile is classified as "${res.data.profile_label}". Consider setting monthly budget alerts for ${topNames} to preserve surplus savings.`
+        : `Your spending profile is classified as "${res.data.profile_label}". Maintain a balanced allocation across essentials and discretionary categories.`;
+
+      return {
+        cluster_id: res.data.cluster_id,
+        profile_label: res.data.profile_label,
+        summary: res.data.summary,
+        top_contributing_categories: topCats,
+        algorithm: 'K-Means (k=5 Centroid Match)',
+        model_version: res.data.model_version || 'kmeans-v1.0.0',
+        recommendation,
+      };
     }
   } catch (err) {
-    // Fallback persona calculation
+    // Fallback persona calculation if ML microservice is unavailable
   }
 
   // Derive persona by looking at highest spending proportion
-  const proportions = profilePayload?.proportions || {};
   let maxCat = 'Food & Dining';
   let maxShare = 0;
 
@@ -133,8 +158,8 @@ async function getSpendingProfile(periodMonth, profilePayload) {
       { name: maxCat, proportion: maxShare || 0.32 },
       { name: 'Groceries', proportion: proportions['Groceries'] || 0.18 },
     ],
-    algorithm: 'K-Means (k=4 Centroid Match)',
-    model_version: 'kmeans-heuristic-v1.0',
+    algorithm: 'K-Means (k=5 Fallback Heuristic)',
+    model_version: 'kmeans-fallback-v1.0',
     recommendation: `Your ${maxCat} allocation is prominent this month. Setting a monthly budget limit could optimize savings.`,
   };
 }
@@ -145,3 +170,4 @@ module.exports = {
   getSpendingProfile,
   CATEGORY_NAMES,
 };
+

@@ -161,7 +161,7 @@ async function getSpendingPatterns(req, res, next) {
           ...c,
           color: CATEGORY_COLORS[categories.find((cat) => cat.name === c.name)?.id] || '#6366f1',
         })),
-        algorithm: clusterResult.algorithm || 'K-Means (k=4 Centroid Match)',
+        algorithm: clusterResult.algorithm || 'K-Means (k=5 Centroid Match)',
         modelVersion: clusterResult.model_version,
         recommendation: clusterResult.recommendation,
       },
