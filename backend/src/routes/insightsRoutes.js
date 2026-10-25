@@ -7,5 +7,7 @@ router.use(authenticateUser);
 
 router.get('/spending-patterns', analyticsController.getSpendingPatterns);
 router.get('/unusual-expenses', analyticsController.getUnusualExpenses);
+router.post('/simulate-profile', analyticsController.simulateProfile);
+router.get('/model-metrics', analyticsController.getModelMetrics);
 
 module.exports = router;

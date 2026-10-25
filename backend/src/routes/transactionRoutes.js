@@ -8,6 +8,7 @@ router.use(authenticateUser);
 router.get('/', transactionController.getTransactions);
 router.post('/', transactionController.addTransaction);
 router.patch('/:id', transactionController.updateTransaction);
+router.put('/:id', transactionController.updateTransaction);
 router.delete('/:id', transactionController.deleteTransaction);
 router.post('/import', transactionController.importCsv);
 

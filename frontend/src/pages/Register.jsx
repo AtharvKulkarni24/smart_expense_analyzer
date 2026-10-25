@@ -59,7 +59,7 @@ export default function Register() {
         <div className="glass-card p-8 rounded-2xl border border-slate-800 shadow-2xl space-y-6">
           <div>
             <h2 className="font-display font-bold text-xl text-white">Create Account</h2>
-            <p className="text-xs text-slate-400 mt-1">Join SpendSense and discover your financial archetype</p>
+            <p className="text-xs text-slate-400 mt-1">Join SpendSense and take control of your financial habits</p>
           </div>
 
           {error && (

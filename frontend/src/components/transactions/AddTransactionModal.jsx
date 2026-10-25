@@ -158,8 +158,8 @@ export default function AddTransactionModal({ isOpen, onClose, onTransactionAdde
                 <div className="flex items-center gap-2">
                   <Sparkles className="w-3.5 h-3.5 text-brand-400 animate-pulse" />
                   <span className="text-slate-300">
-                    ML Suggested: <strong className="text-brand-300">{mlSuggestion.categoryName}</strong>
-                    <span className="text-[10px] text-slate-400 ml-1.5">({Math.round((mlSuggestion.confidence || 0.9) * 100)}% confidence)</span>
+                    Suggested Category: <strong className="text-brand-300">{mlSuggestion.categoryName}</strong>
+                    <span className="text-[10px] text-emerald-400 font-semibold ml-1.5 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">Auto Match</span>
                   </span>
                 </div>
                 {Number(categoryId) !== mlSuggestion.categoryId ? (

@@ -56,7 +56,7 @@ export default function Login() {
             Spend<span className="text-brand-400">Sense</span>
           </h1>
           <p className="text-xs text-slate-400 mt-1.5">
-            Machine Learning Powered Expense Analyzer & Archetype Detector
+            Smart Expense Analyzer & Personalized Financial Insights
           </p>
         </div>
 

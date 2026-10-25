@@ -12,20 +12,23 @@ import {
   Menu,
   X,
   TrendingUp,
-  Cpu
+  Cpu,
+  User as UserIcon
 } from 'lucide-react';
+import ProfileSettingsModal from './ProfileSettingsModal';
 
 export default function Layout({ children, onOpenAddModal }) {
   const { user, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [profileModalOpen, setProfileModalOpen] = useState(false);
 
   const navItems = [
     { label: 'Dashboard', path: '/', icon: LayoutDashboard },
     { label: 'Transactions', path: '/transactions', icon: Receipt },
     { label: 'Budgets', path: '/budgets', icon: Wallet },
-    { label: 'ML Insights', path: '/insights', icon: Sparkles, badge: 'AI' },
+    { label: 'Smart Insights', path: '/insights', icon: Sparkles, badge: 'AI' },
   ];
 
   const handleLogout = () => {
@@ -54,7 +57,7 @@ export default function Layout({ children, onOpenAddModal }) {
                   </span>
                   <div className="flex items-center gap-1.5 -mt-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                    <span className="text-[10px] uppercase tracking-wider text-slate-400 font-medium">ML Engine Ready</span>
+                    <span className="text-[10px] uppercase tracking-wider text-slate-400 font-medium">Smart Analytics Active</span>
                   </div>
                 </div>
               </Link>
@@ -100,16 +103,21 @@ export default function Layout({ children, onOpenAddModal }) {
                 </button>
               )}
 
-              {/* User profile dropdown info */}
-              <div className="hidden lg:flex items-center gap-3 pl-3 border-l border-slate-800">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-brand-600 flex items-center justify-center font-bold text-xs text-white">
+              {/* User profile button */}
+              <button
+                type="button"
+                onClick={() => setProfileModalOpen(true)}
+                className="hidden lg:flex items-center gap-3 pl-3 border-l border-slate-800 hover:opacity-80 transition-opacity cursor-pointer text-left group"
+                title="Account Profile & Security"
+              >
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-brand-600 flex items-center justify-center font-bold text-xs text-white shadow-sm group-hover:scale-105 transition-transform">
                   {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
                 </div>
                 <div className="text-left">
                   <p className="text-xs font-semibold text-slate-200 leading-none">{user?.name || 'Atharv'}</p>
-                  <p className="text-[10px] text-slate-400 leading-none mt-1">DWM Mini Project</p>
+                  <p className="text-[10px] text-brand-300 leading-none mt-1 font-medium">Profile & Security</p>
                 </div>
-              </div>
+              </button>
 
               {/* Logout button */}
               <button
@@ -158,6 +166,19 @@ export default function Layout({ children, onOpenAddModal }) {
                 </Link>
               );
             })}
+            {/* Mobile Profile & Security Button */}
+            <button
+              type="button"
+              onClick={() => {
+                setMobileMenuOpen(false);
+                setProfileModalOpen(true);
+              }}
+              className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800 transition-colors"
+            >
+              <UserIcon className="w-4 h-4 text-brand-400" />
+              <span>Profile & Security Settings</span>
+            </button>
+
             {onOpenAddModal && (
               <button
                 onClick={() => {
@@ -178,6 +199,12 @@ export default function Layout({ children, onOpenAddModal }) {
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {children}
       </main>
+
+      {/* Profile & Security Settings Modal */}
+      <ProfileSettingsModal
+        isOpen={profileModalOpen}
+        onClose={() => setProfileModalOpen(false)}
+      />
 
       {/* Footer */}
       <footer className="border-t border-slate-800/80 py-4 text-center text-xs text-slate-500">

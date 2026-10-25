@@ -54,6 +54,16 @@ export const spendsenseApi = {
     return res.data;
   },
 
+  async updateProfile(payload) {
+    const res = await api.patch('/auth/profile', payload);
+    return res.data;
+  },
+
+  async changePassword(payload) {
+    const res = await api.post('/auth/change-password', payload);
+    return res.data;
+  },
+
   // Suggest Category via ML Microservice
   async suggestCategory(query) {
     const res = await api.get(`/categories/suggest?q=${encodeURIComponent(query)}`);
@@ -85,7 +95,7 @@ export const spendsenseApi = {
   },
 
   async updateTransaction(id, payload) {
-    const res = await api.put(`/transactions/${id}`, payload);
+    const res = await api.patch(`/transactions/${id}`, payload);
     return res.data;
   },
 
@@ -125,6 +135,18 @@ export const spendsenseApi = {
   // Anomaly / Unusual Expenses via IQR
   async getUnusualExpenses(month = '2026-03') {
     const res = await api.get(`/insights/unusual-expenses?month=${month}`);
+    return res.data;
+  },
+
+  // What-If Spending Habit Simulator (K-Means Inference)
+  async simulateProfile(payload) {
+    const res = await api.post('/insights/simulate-profile', payload);
+    return res.data;
+  },
+
+  // DWM Model Performance & Active Learning Metrics
+  async getModelMetrics() {
+    const res = await api.get('/insights/model-metrics');
     return res.data;
   },
 };

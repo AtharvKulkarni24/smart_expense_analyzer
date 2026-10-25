@@ -9,7 +9,8 @@ import {
   PlusCircle, 
   UploadCloud,
   ChevronRight,
-  AlertTriangle
+  AlertTriangle,
+  AlertCircle
 } from 'lucide-react';
 import { 
   AreaChart, 
@@ -23,6 +24,7 @@ import {
   Cell 
 } from 'recharts';
 import { spendsenseApi, getCategoryById } from '../services/api';
+import MonthPicker from '../components/common/MonthPicker';
 
 export default function Dashboard({ onOpenAddModal, onOpenCsvModal }) {
   const [selectedMonth, setSelectedMonth] = useState('2026-03');
@@ -89,21 +91,13 @@ export default function Dashboard({ onOpenAddModal, onOpenCsvModal }) {
             Financial Dashboard
           </h1>
           <p className="text-xs sm:text-sm text-slate-400 mt-1">
-            Real-time analytics and ML-discovered spending archetypes
+            Real-time expense tracking & personalized financial habits
           </p>
         </div>
 
         <div className="flex items-center gap-3 w-full sm:w-auto">
-          {/* Month selector */}
-          <select
-            value={selectedMonth}
-            onChange={(e) => setSelectedMonth(e.target.value)}
-            className="px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs font-semibold text-slate-200 outline-none cursor-pointer focus:border-brand-500"
-          >
-            <option value="2026-03">March 2026</option>
-            <option value="2026-02">February 2026</option>
-            <option value="2026-01">January 2026</option>
-          </select>
+          {/* Dynamic Month & Year Picker */}
+          <MonthPicker selectedMonth={selectedMonth} onChange={setSelectedMonth} />
 
           {/* Quick Actions */}
           <button
@@ -218,6 +212,35 @@ export default function Dashboard({ onOpenAddModal, onOpenCsvModal }) {
 
       </div>
 
+      {/* Budget Overrun Alert Banner */}
+      {budgets?.categories?.some((c) => c.status === 'exceeded') && (
+        <div className="p-4 rounded-2xl bg-gradient-to-r from-rose-950/50 via-slate-900 to-slate-900 border border-rose-500/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-lg">
+          <div className="flex items-start sm:items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-rose-500/20 text-rose-400 flex items-center justify-center flex-shrink-0">
+              <AlertCircle className="w-5 h-5" />
+            </div>
+            <div>
+              <p className="text-xs font-bold uppercase tracking-wider text-rose-400">
+                Budget Limit Exceeded
+              </p>
+              <p className="text-xs sm:text-sm font-semibold text-white mt-0.5">
+                {budgets.categories
+                  .filter((c) => c.status === 'exceeded')
+                  .map((c) => `${c.categoryName} (${c.utilizationPercentage}% spent)`)
+                  .join(' • ')}
+              </p>
+            </div>
+          </div>
+          <a
+            href="/budgets"
+            className="px-3.5 py-1.5 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/30 text-xs font-semibold flex items-center gap-1 w-fit transition-all flex-shrink-0"
+          >
+            <span>Review Budgets</span>
+            <ChevronRight className="w-3.5 h-3.5" />
+          </a>
+        </div>
+      )}
+
       {/* ML Spending Archetype Banner (K-Means Persona) */}
       {spendingPattern && (
         <div className="relative overflow-hidden rounded-2xl border border-brand-500/30 bg-gradient-to-r from-brand-950/70 via-indigo-950/40 to-slate-900 p-6 shadow-glow">
@@ -226,10 +249,10 @@ export default function Dashboard({ onOpenAddModal, onOpenCsvModal }) {
               <div className="flex items-center gap-2">
                 <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-brand-500/20 text-brand-300 border border-brand-500/30 text-[11px] font-bold uppercase tracking-wider">
                   <Sparkles className="w-3 h-3 text-brand-400" />
-                  K-Means Persona Discovered
+                  Spending Personality
                 </span>
-                <span className="text-xs text-slate-400 font-medium">
-                  {spendingPattern.algorithm}
+                <span className="text-xs text-brand-300 font-medium">
+                  Monthly Profile
                 </span>
               </div>
               <h2 className="font-display font-bold text-xl sm:text-2xl text-white">
@@ -240,7 +263,7 @@ export default function Dashboard({ onOpenAddModal, onOpenCsvModal }) {
               </p>
               {spendingPattern.recommendation && (
                 <p className="text-xs text-brand-300/90 font-medium flex items-center gap-1.5 pt-1">
-                  <span>💡 Insight:</span>
+                  <span>💡 Tip:</span>
                   <span>{spendingPattern.recommendation}</span>
                 </p>
               )}
@@ -249,7 +272,7 @@ export default function Dashboard({ onOpenAddModal, onOpenCsvModal }) {
             {/* Persona Contributing Categories */}
             <div className="flex-shrink-0 flex sm:flex-col gap-2 border-t md:border-t-0 md:border-l border-slate-800 pt-4 md:pt-0 md:pl-6">
               <span className="text-[11px] uppercase tracking-wider font-semibold text-slate-400">
-                Dominant Categories
+                Key Profile Habits
               </span>
               <div className="flex flex-wrap gap-2">
                 {spendingPattern.topContributingCategories?.map((cat, i) => (

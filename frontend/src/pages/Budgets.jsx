@@ -10,6 +10,7 @@ import {
   Save
 } from 'lucide-react';
 import { spendsenseApi, FIXED_CATEGORIES } from '../services/api';
+import MonthPicker from '../components/common/MonthPicker';
 
 export default function Budgets() {
   const [selectedMonth, setSelectedMonth] = useState('2026-03');
@@ -92,19 +93,8 @@ export default function Budgets() {
           </p>
         </div>
 
-        {/* Month selector */}
-        <div className="flex items-center gap-2">
-          <Calendar className="w-4 h-4 text-slate-400" />
-          <select
-            value={selectedMonth}
-            onChange={(e) => setSelectedMonth(e.target.value)}
-            className="px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs font-semibold text-slate-200 outline-none cursor-pointer focus:border-brand-500"
-          >
-            <option value="2026-03">March 2026</option>
-            <option value="2026-02">February 2026</option>
-            <option value="2026-01">January 2026</option>
-          </select>
-        </div>
+        {/* Dynamic Month & Year Picker */}
+        <MonthPicker selectedMonth={selectedMonth} onChange={setSelectedMonth} />
       </div>
 
       {/* Overview Card */}

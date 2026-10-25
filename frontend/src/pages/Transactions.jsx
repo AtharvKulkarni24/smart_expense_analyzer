@@ -9,9 +9,12 @@ import {
   ChevronRight, 
   Calendar,
   X,
-  FileSpreadsheet
+  FileSpreadsheet,
+  Download,
+  Edit2
 } from 'lucide-react';
 import { spendsenseApi, FIXED_CATEGORIES, getCategoryById } from '../services/api';
+import EditTransactionModal from '../components/transactions/EditTransactionModal';
 
 export default function Transactions({ onOpenAddModal, onOpenCsvModal }) {
   const [transactions, setTransactions] = useState([]);
@@ -24,9 +27,62 @@ export default function Transactions({ onOpenAddModal, onOpenCsvModal }) {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
 
+  // Edit Modal & Export State
+  const [editingTx, setEditingTx] = useState(null);
+  const [isExporting, setIsExporting] = useState(false);
+
   useEffect(() => {
     fetchTransactions(1);
   }, [selectedCategory, startDate, endDate]);
+
+  const handleExportCsv = async () => {
+    setIsExporting(true);
+    try {
+      const params = {
+        limit: 1000,
+        search: search.trim() || undefined,
+        categoryId: selectedCategory || undefined,
+        startDate: startDate || undefined,
+        endDate: endDate || undefined,
+      };
+      const res = await spendsenseApi.getTransactions(params);
+      const exportData = res.data?.transactions || transactions;
+
+      if (!exportData || exportData.length === 0) {
+        alert('No transactions found to export.');
+        return;
+      }
+
+      // Generate CSV rows
+      const headers = ['Date', 'Description', 'Category', 'Merchant', 'Amount (INR)', 'Source'];
+      const csvRows = [headers.join(',')];
+
+      exportData.forEach((tx) => {
+        const catName = tx.category?.name || getCategoryById(tx.categoryId)?.name || 'Other';
+        const desc = `"${(tx.description || '').replace(/"/g, '""')}"`;
+        const merchant = `"${(tx.merchant || '').replace(/"/g, '""')}"`;
+        const amt = Number(tx.amount || 0).toFixed(2);
+        const date = tx.transactionDate || '';
+        const source = tx.source || 'manual';
+
+        csvRows.push([date, desc, `"${catName}"`, merchant, amt, source].join(','));
+      });
+
+      const csvContent = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csvRows.join('\n'));
+      const link = document.createElement('a');
+      link.setAttribute('href', csvContent);
+      const today = new Date().toISOString().split('T')[0];
+      link.setAttribute('download', `spendsense_transactions_${today}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (err) {
+      console.error('Failed to export CSV:', err);
+      alert('Failed to export transactions. Please try again.');
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   const fetchTransactions = async (page = 1) => {
     setLoading(true);
@@ -94,12 +150,26 @@ export default function Transactions({ onOpenAddModal, onOpenCsvModal }) {
             Transaction Ledger
           </h1>
           <p className="text-xs sm:text-sm text-slate-400 mt-1">
-            Search, filter, and audit recorded transactions with automatic ML categorization
+            Search, filter, edit, and export recorded expenses with smart categorization
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5 w-full sm:w-auto">
+        <div className="flex flex-wrap items-center gap-2.5 w-full sm:w-auto">
+          {/* Export CSV Button */}
           <button
+            type="button"
+            onClick={handleExportCsv}
+            disabled={isExporting}
+            className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold flex items-center gap-1.5 transition-all disabled:opacity-50"
+            title="Download transactions as CSV"
+          >
+            <Download className="w-4 h-4 text-emerald-400" />
+            <span>{isExporting ? 'Exporting...' : 'Export CSV'}</span>
+          </button>
+
+          {/* Import CSV Button */}
+          <button
+            type="button"
             onClick={onOpenCsvModal}
             className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold flex items-center gap-1.5 transition-all"
           >
@@ -107,7 +177,9 @@ export default function Transactions({ onOpenAddModal, onOpenCsvModal }) {
             <span>Import CSV</span>
           </button>
 
+          {/* Add Expense Button */}
           <button
+            type="button"
             onClick={onOpenAddModal}
             className="flex-1 sm:flex-none px-4 py-2 rounded-xl bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white text-xs font-semibold flex items-center justify-center gap-1.5 shadow-glow transition-all"
           >
@@ -261,15 +333,26 @@ export default function Transactions({ onOpenAddModal, onOpenCsvModal }) {
                         {formatCurrency(tx.amount)}
                       </td>
 
-                      {/* Delete */}
+                      {/* Actions: Edit & Delete */}
                       <td className="px-4 py-3 text-center whitespace-nowrap">
-                        <button
-                          onClick={() => handleDelete(tx.id)}
-                          className="p-1.5 rounded-lg text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
-                          title="Delete transaction"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
+                        <div className="flex items-center justify-center gap-1">
+                          <button
+                            type="button"
+                            onClick={() => setEditingTx(tx)}
+                            className="p-1.5 rounded-lg text-slate-400 hover:text-brand-400 hover:bg-brand-500/10 transition-colors"
+                            title="Edit expense"
+                          >
+                            <Edit2 className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDelete(tx.id)}
+                            className="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
+                            title="Delete expense"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   );
@@ -303,6 +386,14 @@ export default function Transactions({ onOpenAddModal, onOpenCsvModal }) {
           </div>
         </div>
       </div>
+
+      {/* Edit Transaction Modal */}
+      <EditTransactionModal
+        isOpen={!!editingTx}
+        transaction={editingTx}
+        onClose={() => setEditingTx(null)}
+        onTransactionUpdated={() => fetchTransactions(pagination.page)}
+      />
 
     </div>
   );
